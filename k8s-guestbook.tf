@@ -61,6 +61,10 @@ resource "kubernetes_service" "frontend-svc" {
       app  = "guestbook"
       name = "frontend"
     }
+
+    # annotations {
+    #   "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" = "${aws_acm_certificate.cert.certificate_arn}"
+    # }
   }
 
   spec {
@@ -72,6 +76,12 @@ resource "kubernetes_service" "frontend-svc" {
     port {
       port = 80
     }
+
+    # port {
+    #   port = 443
+
+
+    # }
 
     type = "LoadBalancer"
   }

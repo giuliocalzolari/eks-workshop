@@ -7,14 +7,11 @@ provider "aws" {
   region  = "${var.region}"
 }
 
-
 data "aws_availability_zones" "available" {}
 
 locals {
   cluster_name = "gc-eks"
 }
-
-
 
 resource "aws_security_group" "all_worker_mgmt" {
   name_prefix = "all_worker_management"

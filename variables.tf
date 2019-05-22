@@ -16,3 +16,11 @@ variable "map_accounts_count" {
   type        = "string"
   default     = 1
 }
+
+variable "route53_zone_id" {
+  default = "ZQ99OQAVV7HL6"
+}
+
+variable "route53_zone_domain" {
+  default = "gc.crlabs.cloud"
+}

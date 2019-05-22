@@ -12,12 +12,14 @@
 # }
 
 # resource "kubernetes_service_account" "ks_service_account" {
+#   automount_service_account_token = true
+
 #   metadata {
-#     name      = "kubernetes-dashboard2"
+#     name      = "kubernetes-dashboard"
 #     namespace = "kube-system"
 
 #     labels {
-#       k8s-app = "kubernetes-dashboard2"
+#       k8s-app = "kubernetes-dashboard"
 #     }
 #   }
 # }
@@ -97,7 +99,7 @@
 #   }
 # }
 
-# resource "kubernetes_deployment" "kv_dashboard_deployment" {
+# resource "kubernetes_deployment" "ks_dashboard_deployment" {
 #   metadata {
 #     name      = "kubernetes-dashboard"
 #     namespace = "kube-system"
@@ -181,6 +183,22 @@
 #   }
 # }
 
+# resource "null_resource" "fix_ks_dashboard_deployment" {
+#   depends_on = ["kubernetes_deployment.ks_dashboard_deployment"]
+
+#   provisioner "local-exec" {
+#     command = <<EOF
+# kubectl patch deployment kubernetes-dashboard \
+#   --patch '{"spec": {"template": {"spec": {"automountServiceAccountToken": true}}}}' \
+#   --namespace kube-system
+# EOF
+
+#     environment {
+#       KUBECONFIG = "${module.eks-cluster.kubeconfig_filename}"
+#     }
+#   }
+# }
+
 # resource "kubernetes_service" "kv_dashboard_svc" {
 #   metadata {
 #     namespace = "kube-system"
@@ -205,10 +223,10 @@
 
 resource "null_resource" "install_dashboard" {
   provisioner "local-exec" {
-    command = "kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml"
+    command = "kubectl apply -f kubernetes-dashboard.yaml"
+
     environment {
       KUBECONFIG = "${module.eks-cluster.kubeconfig_filename}"
     }
   }
 }
-
