@@ -15,6 +15,7 @@ certs/*
 # Crash log files
 crash.log
 kubeconfig/*
+kubeconfig*
 
 # Distribution / packaging
 .Python
