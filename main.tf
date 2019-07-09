@@ -64,13 +64,12 @@ module "vpc" {
 
 module "eks-cluster" {
   source                    = "terraform-aws-modules/eks/aws"
-  version                   = "1.6.0"
+  version                   = "5.0.0"
   write_kubeconfig          = true
   write_aws_auth_config     = false
   cluster_name              = local.cluster_name
   subnets                   = module.vpc.public_subnets
   vpc_id                    = module.vpc.vpc_id
-  cluster_version           = "1.12"
   cluster_enabled_log_types = ["api", "authenticator", "controllerManager", "scheduler"]
 
 

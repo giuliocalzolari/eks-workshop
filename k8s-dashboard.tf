@@ -176,6 +176,7 @@ resource "kubernetes_deployment" "ks_dashboard_deployment" {
 
         volume {
           name = "tmp-volume"
+          empty_dir {}
         }
       }
     }
