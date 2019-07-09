@@ -3,7 +3,7 @@ resource "kubernetes_deployment" "frontend" {
   metadata {
     name = "frontend"
 
-    labels {
+    labels = {
       app  = "guestbook"
       name = "frontend"
     }
@@ -13,7 +13,7 @@ resource "kubernetes_deployment" "frontend" {
     replicas = 3
 
     selector {
-      match_labels {
+      match_labels = {
         app  = "guestbook"
         tier = "frontend"
       }
@@ -21,13 +21,33 @@ resource "kubernetes_deployment" "frontend" {
 
     template {
       metadata {
-        labels {
+        labels = {
           app  = "guestbook"
           tier = "frontend"
         }
       }
 
       spec {
+
+        affinity {
+          pod_anti_affinity {
+            preferred_during_scheduling_ignored_during_execution {
+              weight = 1
+
+              pod_affinity_term {
+                topology_key = "failure-domain.beta.kubernetes.io/zone"
+                label_selector {
+                  match_expressions {
+                    key      = "tier"
+                    operator = "In"
+                    values   = ["frontend"]
+                  }
+                }
+              }
+            }
+          }
+        }
+
         container {
           image = "gcr.io/google-samples/gb-frontend:v4"
           name  = "php-redis"
@@ -57,7 +77,7 @@ resource "kubernetes_service" "frontend-svc" {
   metadata {
     name = "frontend"
 
-    labels {
+    labels = {
       app  = "guestbook"
       name = "frontend"
     }
@@ -68,7 +88,7 @@ resource "kubernetes_service" "frontend-svc" {
   }
 
   spec {
-    selector {
+    selector = {
       app  = "guestbook"
       tier = "frontend"
     }
@@ -91,7 +111,7 @@ resource "kubernetes_deployment" "redis-master" {
   metadata {
     name = "redis-master"
 
-    labels {
+    labels = {
       app  = "redis"
       role = "master"
       name = "backend"
@@ -102,7 +122,7 @@ resource "kubernetes_deployment" "redis-master" {
     replicas = 1
 
     selector {
-      match_labels {
+      match_labels = {
         app  = "redis"
         role = "master"
         name = "backend"
@@ -111,7 +131,7 @@ resource "kubernetes_deployment" "redis-master" {
 
     template {
       metadata {
-        labels {
+        labels = {
           app  = "redis"
           role = "master"
           name = "backend"
@@ -143,7 +163,7 @@ resource "kubernetes_service" "redis-master-svc" {
   metadata {
     name = "redis-master"
 
-    labels {
+    labels = {
       app  = "redis"
       role = "master"
       name = "backend"
@@ -151,7 +171,7 @@ resource "kubernetes_service" "redis-master-svc" {
   }
 
   spec {
-    selector {
+    selector = {
       app  = "redis"
       role = "master"
       name = "backend"
@@ -168,7 +188,7 @@ resource "kubernetes_deployment" "redis-slave" {
   metadata {
     name = "redis-slave"
 
-    labels {
+    labels = {
       app  = "redis"
       role = "slave"
       name = "backend"
@@ -180,7 +200,7 @@ resource "kubernetes_deployment" "redis-slave" {
     revision_history_limit = 0
 
     selector {
-      match_labels {
+      match_labels = {
         app  = "redis"
         role = "slave"
         name = "backend"
@@ -189,7 +209,7 @@ resource "kubernetes_deployment" "redis-slave" {
 
     template {
       metadata {
-        labels {
+        labels = {
           app  = "redis"
           role = "slave"
           name = "backend"
@@ -197,6 +217,26 @@ resource "kubernetes_deployment" "redis-slave" {
       }
 
       spec {
+
+        affinity {
+          pod_anti_affinity {
+            preferred_during_scheduling_ignored_during_execution {
+              weight = 1
+
+              pod_affinity_term {
+                topology_key = "failure-domain.beta.kubernetes.io/zone"
+                label_selector {
+                  match_expressions {
+                    key      = "role"
+                    operator = "In"
+                    values   = ["slave"]
+                  }
+                }
+              }
+            }
+          }
+        }
+
         container {
           image = "gcr.io/google_samples/gb-redisslave:v1"
           name  = "slave"
@@ -226,7 +266,7 @@ resource "kubernetes_service" "redis-slave-svc" {
   metadata {
     name = "redis-slave"
 
-    labels {
+    labels = {
       app  = "redis"
       role = "slave"
       name = "backend"
@@ -234,7 +274,7 @@ resource "kubernetes_service" "redis-slave-svc" {
   }
 
   spec {
-    selector {
+    selector = {
       app  = "redis"
       role = "slave"
       name = "backend"

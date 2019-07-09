@@ -16,7 +16,7 @@ resource "kubernetes_storage_class" "io1" {
   storage_provisioner = "kubernetes.io/aws-ebs"
   reclaim_policy      = "Retain"
 
-  parameters {
+  parameters = {
     type   = "io1"
     fsType = "ext4"
   }
