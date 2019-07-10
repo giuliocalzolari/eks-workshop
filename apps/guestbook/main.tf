@@ -2,10 +2,12 @@
 resource "kubernetes_deployment" "frontend" {
   metadata {
     name = "frontend"
+    namespace = "${var.namespace}"
 
     labels = {
       app  = "guestbook"
       name = "frontend"
+      stage = "${var.stage}"
     }
   }
 
@@ -16,6 +18,7 @@ resource "kubernetes_deployment" "frontend" {
       match_labels = {
         app  = "guestbook"
         tier = "frontend"
+        stage = "${var.stage}"
       }
     }
 
@@ -24,6 +27,7 @@ resource "kubernetes_deployment" "frontend" {
         labels = {
           app  = "guestbook"
           tier = "frontend"
+          stage = "${var.stage}"
         }
       }
 
@@ -76,10 +80,11 @@ resource "kubernetes_deployment" "frontend" {
 resource "kubernetes_service" "frontend-svc" {
   metadata {
     name = "frontend"
-
+    namespace = "${var.namespace}"
     labels = {
       app  = "guestbook"
       name = "frontend"
+      stage = "${var.stage}"
     }
 
     # annotations {
@@ -91,6 +96,7 @@ resource "kubernetes_service" "frontend-svc" {
     selector = {
       app  = "guestbook"
       tier = "frontend"
+      stage = "${var.stage}"
     }
 
     port {
@@ -110,11 +116,13 @@ resource "kubernetes_service" "frontend-svc" {
 resource "kubernetes_deployment" "redis-master" {
   metadata {
     name = "redis-master"
+    namespace = "${var.namespace}"
 
     labels = {
       app  = "redis"
       role = "master"
       name = "backend"
+      stage = "${var.stage}"
     }
   }
 
@@ -126,6 +134,7 @@ resource "kubernetes_deployment" "redis-master" {
         app  = "redis"
         role = "master"
         name = "backend"
+        stage = "${var.stage}"
       }
     }
 
@@ -135,6 +144,7 @@ resource "kubernetes_deployment" "redis-master" {
           app  = "redis"
           role = "master"
           name = "backend"
+          stage = "${var.stage}"
         }
       }
 
@@ -162,11 +172,13 @@ resource "kubernetes_deployment" "redis-master" {
 resource "kubernetes_service" "redis-master-svc" {
   metadata {
     name = "redis-master"
+    namespace = "${var.namespace}"
 
     labels = {
       app  = "redis"
       role = "master"
       name = "backend"
+      stage = "${var.stage}"
     }
   }
 
@@ -175,6 +187,7 @@ resource "kubernetes_service" "redis-master-svc" {
       app  = "redis"
       role = "master"
       name = "backend"
+      stage = "${var.stage}"
     }
 
     port {
@@ -187,11 +200,13 @@ resource "kubernetes_service" "redis-master-svc" {
 resource "kubernetes_deployment" "redis-slave" {
   metadata {
     name = "redis-slave"
+    namespace = "${var.namespace}"
 
     labels = {
       app  = "redis"
       role = "slave"
       name = "backend"
+      stage = "${var.stage}"
     }
   }
 
@@ -204,6 +219,7 @@ resource "kubernetes_deployment" "redis-slave" {
         app  = "redis"
         role = "slave"
         name = "backend"
+        stage = "${var.stage}"
       }
     }
 
@@ -213,6 +229,7 @@ resource "kubernetes_deployment" "redis-slave" {
           app  = "redis"
           role = "slave"
           name = "backend"
+          stage = "${var.stage}"
         }
       }
 
@@ -265,11 +282,13 @@ resource "kubernetes_deployment" "redis-slave" {
 resource "kubernetes_service" "redis-slave-svc" {
   metadata {
     name = "redis-slave"
+    namespace = "${var.namespace}"
 
     labels = {
       app  = "redis"
       role = "slave"
       name = "backend"
+      stage = "${var.stage}"
     }
   }
 
@@ -278,6 +297,7 @@ resource "kubernetes_service" "redis-slave-svc" {
       app  = "redis"
       role = "slave"
       name = "backend"
+      stage = "${var.stage}"
     }
 
     port {

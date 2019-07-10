@@ -21,3 +21,48 @@ resource "kubernetes_storage_class" "io1" {
     fsType = "ext4"
   }
 }
+
+
+resource "kubernetes_namespace" "ns_dev" {
+  metadata {
+    annotations = {
+      name = "dev"
+    }
+
+    labels = {
+      mylabel = "dev"
+    }
+
+    name = "dev"
+  }
+}
+
+module "guestbook-dev" {
+  source    = "./apps/guestbook"
+  namespace = "dev"
+  stage     = "dev"
+
+}
+
+
+
+resource "kubernetes_namespace" "ns_prod" {
+  metadata {
+    annotations = {
+      name = "prod"
+    }
+
+    labels = {
+      mylabel = "prod"
+    }
+
+    name = "prod"
+  }
+}
+
+module "guestbook-prod" {
+  source    = "./apps/guestbook"
+  namespace = "prod"
+  stage     = "prod"
+
+}
